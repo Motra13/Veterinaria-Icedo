@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notificaciones & Recordatorios | CLÍNICA VETERINARIA DR. ICEDO</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>CLÍNICA VETERINARIA DR. ICEDO</h1>
+    <p>Notificaciones & Recordatorios</p>
+  </header>
+  <div class="container-flex">
+    <nav class="side-menu">
+      <h2>Menú</h2>
+      <div class="menu-group">
+        <button class="menu-item" onclick="window.location='panel.html'">Panel Principal</button>
+        <button class="menu-item" onclick="window.location='notificaciones.html'">Notificaciones</button>
+      </div>
+    </nav>
+    <main class="main-center">
+      <section>
+        <h2>Notificaciones automáticas</h2>
+        <ul id="notif-list">
+          <li>Cargando notificaciones...</li>
+        </ul>
+        <div class="info-hint">
+          <small>Estas notificaciones se generan automáticamente por el sistema (ej: nuevas consultas, cirugías programadas, stock bajo, etc).</small>
+        </div>
+      </section>
+      <section style="margin-top:2em;">
+        <h2>Recordatorios personales</h2>
+     <form id="form-recordatorio" style="margin-bottom:1em;">
+      <input type="text" id="mensaje-recordatorio" name="mensaje" maxlength="255" required placeholder="¿Qué necesitas recordar?">
+      <input type="date" id="fecha-recordatorio" name="fecha" required>
+      <button type="submit">Agregar recordatorio</button>
+    </form>
+        <ul id="reminders-list">
+          <li>Cargando recordatorios...</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+  <footer>
+    &copy; 2025 CLÍNICA VETERINARIA DR. ICEDO
+  </footer>
+  <script src="notificaciones.js"></script>
+</body>
+</html>

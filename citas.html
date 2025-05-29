@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citas | CLÍNICA VETERINARIA DR. ICEDO</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- FullCalendar CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css">
+  <style>
+    body { background: #f8f8fc;}
+    #calendar { max-width: 900px; margin: 2rem auto; background:#fff; border-radius:8px; box-shadow:0 2px 16px #b3000022; padding:1rem;}
+    .fc-event { font-size: 1em; }
+    .acceso-privado {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      align-items: flex-start;
+      margin: 2rem auto;
+      max-width: 1200px;
+    }
+    section, nav {
+      background: #fff;
+      margin: 0 auto;
+      border-radius: 8px; 
+      padding: 1rem;
+      box-shadow: 0 2px 8px #b3000022;
+      text-align: center;
+    }
+    section {
+      flex: 1 1 350px;
+      min-width: 320px;
+      max-width: 500px;
+    }
+    label { font-weight: 600; display:block; margin-top:0.7em; margin-bottom:0.3em;}
+    input, select, textarea {
+      width: 90%;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      padding: 7px;
+      font-size: 1em;
+      margin-bottom: 0.5em;
+      background: #fafaff;
+    }
+    textarea { min-height: 45px;}
+    button, .btn-mapa, .fc-button {
+      background: #b30000;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.6em 1.1em;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 1em;
+      transition: background 0.2s;
+    }
+    button:hover, .btn-mapa:hover, .fc-button:hover {
+      background: #790000;
+    }
+    .side-menu {
+      min-width:200px; max-width:220px; background:#fff;
+      border-radius:10px; padding:2em 1em; margin-right:2em; 
+      box-shadow:0 2px 12px #b3000022; text-align:left;
+    }
+    .menu-group { margin-bottom:2em;}
+    .menu-item { display:block; background:none; border:none; color:#444; padding:0.7em; font-size:1em; cursor:pointer; width:100%; text-align:left; border-radius:6px; margin-bottom:0.2em;}
+    .menu-item:hover { background:#f2eaea;}
+    .logout-btn { color:#b30000; font-weight:bold;}
+    .quick-actions {
+      display:flex; gap:1em; justify-content:center; margin:1em 0;
+    }
+    .quick-actions button { padding:0.4em 1.2em; border-radius:3em; border:1px solid #b30000; background:#fff; color:#b30000; font-weight:600;}
+    .quick-actions button:hover { background:#ffeaea;}
+    .legend-citas {
+      text-align:left; margin:0.5em 0 1em 0; font-size:0.93em;
+    }
+    .legend-dot { display:inline-block; width:1.3em; height:1.3em; border-radius:50%; vertical-align:middle; margin-right:0.35em;}
+    .dot-ocupada { background:#b30000;}
+    .dot-pendiente { background:#FB8C00;}
+    .dot-completada { background:#43A047;}
+    .dot-cancelada { background:#888;}
+    .tag { background: #f2e8e8; color: #b30000; border-radius: 4px; padding: 2px 7px; margin-left: 3px; display:inline-block;}
+    @media (max-width: 950px) {
+      .acceso-privado { flex-direction: column; align-items: stretch; gap:1.2em;}
+      section { max-width: 100%;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CLÍNICA VETERINARIA DR. ICEDO</h1>
+    <p>Gestión de Citas</p>
+  </header>
+  <div style="display:flex; gap:2em; justify-content:center; align-items:flex-start; margin:2em auto; max-width:1400px;">
+    <nav class="side-menu">
+      <h2>Menú Principal</h2>
+      <div class="menu-group">
+        <button class="menu-item" onclick="window.location='panel.html'"><span>🏠</span> Inicio</button>
+        <button class="menu-item" onclick="window.location='citas.html'"><span>📅</span> Citas</button>
+        <button class="menu-item" onclick="window.location='clientes.html'"><span>👤</span> Clientes</button>
+        <button class="menu-item" onclick="window.location='mascotas.html'"><span>🐾</span> Mascotas</button>
+        <button class="menu-item" onclick="window.location='seguimiento.html'"><span>🩺</span> Seguimiento</button>
+        <button class="menu-item" onclick="window.location='archivos.html'"><span>📁</span> Archivos</button>
+      </div>
+      <div class="menu-group">
+        <a href="login.html" class="logout-btn">Cerrar Sesión</a>
+      </div>
+    </nav>
+    <main class="acceso-privado">
+      <section>
+        <h2>Reservar Nueva Cita</h2>
+        <form id="form-cita" class="form-login" autocomplete="off">
+          <label for="cliente">Nombre del Cliente</label>
+          <input type="text" id="cliente" name="cliente" placeholder="Buscar cliente..." list="clientes-list" required>
+          <datalist id="clientes-list"></datalist>
+
+          <label for="mascota">Nombre de la Mascota</label>
+          <input type="text" id="mascota" name="mascota" placeholder="Buscar mascota..." list="mascotas-list" required>
+          <datalist id="mascotas-list"></datalist>
+
+          <label for="fecha">Fecha</label>
+          <input type="date" id="fecha" name="fecha" required>
+
+          <label for="hora">Hora</label>
+          <select id="hora" name="hora" required>
+            <!-- Las horas se cargarán dinámicamente -->
+          </select>
+
+          <label for="motivo">Motivo</label>
+          <textarea id="motivo" name="motivo" rows="2" required placeholder="Motivo de consulta, síntomas, etc."></textarea>
+
+          <label for="tags">Etiquetas</label>
+          <input type="text" id="tags" name="tags" placeholder="(opcional) Ej: vacuna, control, esterilización">
+
+          <button type="submit" class="btn-mapa">Reservar</button>
+        </form>
+        <div class="quick-actions">
+          <button onclick="document.getElementById('form-cita').reset()">Limpiar</button>
+          <button onclick="abrirModalAyuda()">Ayuda</button>
+        </div>
+        <div id="msg" style="color:#b30000; text-align:center; margin:1rem 0;"></div>
+      </section>
+      <section>
+        <h2>Calendario de Citas</h2>
+        <div class="legend-citas">
+          <span class="legend-dot dot-ocupada"></span>Reservada
+          <span class="legend-dot dot-pendiente"></span>Pendiente
+          <span class="legend-dot dot-completada"></span>Completada
+          <span class="legend-dot dot-cancelada"></span>Cancelada
+        </div>
+        <div id="calendar"></div>
+      </section>
+      <section style="text-align:center; margin-top:2rem;">
+        <a href="panel.html" class="btn-mapa">Volver al Panel</a>
+      </section>
+    </main>
+  </div>
+  <div id="modal-ayuda" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.45); z-index:20; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:10px; max-width:400px; margin:auto; padding:2em; box-shadow:0 2px 16px #b3000022; position:relative;">
+      <span style="position:absolute; top:10px; right:20px; color:#b30000; font-size:1.5em; cursor:pointer;" onclick="cerrarModalAyuda()">&times;</span>
+      <h3>¿Cómo reservar una cita?</h3>
+      <ul style="text-align:left;">
+        <li>Busca el cliente y la mascota (el sistema autocompleta si existen).</li>
+        <li>Selecciona la fecha y una hora disponible. Las horas ocupadas se bloquean automáticamente.</li>
+        <li>Agrega el motivo y, si quieres, etiquetas para filtrar/analizar después.</li>
+        <li>Puedes limpiar el formulario con el botón "Limpiar".</li>
+        <li>El calendario muestra todas las citas y su estado por color.</li>
+      </ul>
+    </div>
+  </div>
+  <div id="modal-cita" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.45); z-index:30; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:10px; max-width:450px; margin:auto; padding:2em; box-shadow:0 2px 24px #b3000044; position:relative;" id="detalle-cita">
+      <!-- Detalle de cita se llena dinámicamente -->
+    </div>
+  </div>
+  <footer>
+    &copy; 2025 CLÍNICA VETERINARIA DR. ICEDO | Panel de empleados
+  </footer>
+  <!-- FullCalendar JS -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+  <script src="citas.js"></script>
+  <script>
+    // Modal ayudante
+    function abrirModalAyuda() { document.getElementById('modal-ayuda').style.display="flex"; }
+    function cerrarModalAyuda() { document.getElementById('modal-ayuda').style.display="none"; }
+  </script>
+</body>
+</html>

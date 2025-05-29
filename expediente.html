@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expediente Clínico | CLÍNICA VETERINARIA DR. ICEDO</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>CLÍNICA VETERINARIA DR. ICEDO</h1>
+    <p>Expediente Clínico de Mascotas</p>
+  </header>
+  <div class="container-flex">
+    <!-- Puedes reutilizar el mismo menú lateral del panel.html si lo deseas -->
+    <nav class="side-menu">
+      <h2>Menú</h2>
+      <div class="menu-group">
+        <button class="menu-item" onclick="window.location='panel.html'">Panel Principal</button>
+        <button class="menu-item" onclick="window.location='expediente.html'">Expediente Clínico</button>
+      </div>
+    </nav>
+    <main class="main-center">
+      <section>
+        <h2>Búsqueda de Mascota</h2>
+        <form id="busqueda-form">
+          <input type="text" name="busqueda" id="busqueda" placeholder="Nombre de la mascota o del dueño" required>
+          <button type="submit">Buscar</button>
+        </form>
+        <div id="resultados-busqueda"></div>
+      </section>
+      <section id="expediente-section" style="display:none;">
+        <h2>Expediente Clínico de <span id="mascota-nombre"></span></h2>
+        <div id="info-mascota"></div>
+        <h3>Agregar Nueva Nota Clínica</h3>
+        <form id="nueva-nota-form">
+          <textarea name="nota" id="nota" rows="3" placeholder="Descripción, diagnóstico, tratamiento, observaciones..." required></textarea>
+          <button type="submit">Agregar Nota</button>
+        </form>
+        <h3>Historial Clínico</h3>
+        <div id="historial-clinico"></div>
+      </section>
+    </main>
+  </div>
+  <footer>
+    &copy; 2025 CLÍNICA VETERINARIA DR. ICEDO
+  </footer>
+  <script src="expediente.js"></script>
+</body>
+</html>

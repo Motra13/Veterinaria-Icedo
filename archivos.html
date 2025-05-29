@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Archivos | Clínica Veterinaria DR. ICEDO</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .preview-img { max-width:120px; max-height:120px; margin: 4px; border:1px solid #ccc; }
+    .progress-bar { width: 0%; height: 10px; background: #4CAF50; transition: width 0.3s; }
+    .tag { background: #e0e0e0; border-radius:5px; padding:2px 8px; margin:2px; display:inline-block;}
+    .file-row:hover { background: #f5f5f5; }
+    .archivos-table th, .archivos-table td { padding: 6px; }
+    .status-success { color: green; }
+    .status-fail { color: #c00; }
+    .file-actions button { margin-right:3px; }
+    .search-bar { margin-bottom:1em; display:flex; gap:1em; }
+    .filter-bar { margin-bottom:1em; display:flex; gap:1em; }
+    .pagination { margin:1em 0; }
+    .pagination button { margin-right: 3px; }
+    .file-preview-modal { position:fixed; z-index:99; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; }
+    .file-preview-content { background:white; padding:2em; border-radius:8px; max-width:90vw; max-height:90vh; overflow:auto; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CLÍNICA VETERINARIA DR. ICEDO</h1>
+    <p>Gestión de Archivos y Documentos</p>
+  </header>
+  <div class="container-flex">
+    <nav class="side-menu">
+      <h2>Menú Principal</h2>
+      <div class="menu-group">
+        <button class="menu-item" onclick="window.location='panel.html'"><span>🏠</span>Inicio</button>
+        <button class="menu-item" onclick="window.location='archivos.html'"><span>📁</span>Archivos</button>
+      </div>
+      <div class="menu-group">
+        <a href="login.html" class="logout-btn">Cerrar Sesión</a>
+      </div>
+    </nav>
+    <main class="main-center">
+      <section>
+        <h2>Subir Nuevo Archivo</h2>
+        <form id="form-upload" enctype="multipart/form-data" autocomplete="off">
+          <label>Archivo:
+            <input type="file" id="input-file" name="archivo" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar" required>
+          </label>
+          <input type="text" id="input-nombre" name="nombre" placeholder="Nombre descriptivo (opcional)" maxlength="120">
+          <textarea id="input-descripcion" name="descripcion" placeholder="Descripción (opcional)" maxlength="250"></textarea>
+          <input type="text" id="input-tags" name="tags" placeholder="Etiquetas (separadas por coma)">
+          <select id="input-tipo" name="tipo">
+            <option value="">Tipo de archivo...</option>
+            <option value="documento">Documento</option>
+            <option value="imagen">Imagen</option>
+            <option value="resultados">Resultados médicos</option>
+            <option value="expediente">Expediente</option>
+            <option value="factura">Factura</option>
+            <option value="otro">Otro</option>
+          </select>
+          <input type="date" id="input-fecha" name="fecha_asociada" placeholder="Fecha asociada (opcional)">
+          <input type="text" id="input-relacion" name="relacion" placeholder="Relacionado con (id de cliente, mascota, venta, etc)">
+          <button type="submit">Subir archivo</button>
+          <div id="upload-progress" style="width:100%; background:#eee;margin-top:7px;"><div class="progress-bar" id="progress-bar"></div></div>
+        </form>
+        <div id="preview-upload"></div>
+        <hr>
+      </section>
+      <section>
+        <h2>Buscar, Filtrar y Gestionar Archivos</h2>
+        <div class="search-bar">
+          <input type="text" id="buscar" placeholder="Buscar por nombre, descripción, etiqueta...">
+          <button onclick="buscarArchivos()">Buscar</button>
+        </div>
+        <div class="filter-bar">
+          <select id="filtro-tipo" onchange="cargarArchivos()">
+            <option value="">Todos los tipos</option>
+            <option value="documento">Documento</option>
+            <option value="imagen">Imagen</option>
+            <option value="resultados">Resultados médicos</option>
+            <option value="expediente">Expediente</option>
+            <option value="factura">Factura</option>
+            <option value="otro">Otro</option>
+          </select>
+          <select id="filtro-orden" onchange="cargarArchivos()">
+            <option value="fecha_subida DESC">Más recientes</option>
+            <option value="fecha_subida ASC">Más antiguos</option>
+            <option value="nombre ASC">Nombre (A-Z)</option>
+            <option value="nombre DESC">Nombre (Z-A)</option>
+          </select>
+        </div>
+        <div id="estadisticas-archivos"></div>
+        <table class="archivos-table" border="1" width="100%">
+          <thead>
+            <tr>
+              <th>Vista</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Tipo</th>
+              <th>Etiquetas</th>
+              <th>Fecha subida</th>
+              <th>Fecha asociada</th>
+              <th>Relacionado con</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="archivos-body">
+            <tr><td colspan="9">Cargando...</td></tr>
+          </tbody>
+        </table>
+        <div class="pagination" id="paginacion"></div>
+      </section>
+    </main>
+  </div>
+  <div id="modal-preview" class="file-preview-modal" style="display:none;">
+    <div class="file-preview-content" id="modal-content"></div>
+  </div>
+  <footer>
+    &copy; 2025 CLÍNICA VETERINARIA DR. ICEDO
+  </footer>
+  <script src="archivos.js"></script>
+</body>
+</html>

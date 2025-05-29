@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Seguimiento Post Atención | Clínica Veterinaria DR. ICEDO</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .followup-table th, .followup-table td { padding: 6px; }
+    .followup-table tr:hover {background: #f5f5f5;}
+    .icon-btn { background: none; border: none; cursor:pointer; font-size:1.1em; }
+    .badge { border-radius: 4px; background: #eee; color: #333; padding: 2px 7px; margin-left: 3px;}
+    .badge-pendiente { background: #FBC02D; color: #fff;}
+    .badge-completo { background: #43A047; color: #fff;}
+    .badge-atrasado { background: #c00; color: #fff;}
+    .tag { background: #d9edf7; color: #31708f; border-radius: 4px; padding: 2px 8px; margin:0 2px; display:inline-block;}
+    .timeline { border-left: 3px solid #bdbdbd; margin-left:1em; }
+    .timeline-event { position:relative; margin-bottom:1.7em; }
+    .timeline-event:before { content: ""; width:13px; height:13px; background:#2196F3; border-radius:50%; position:absolute; left:-27px; top:1px; }
+    .timeline-event .date { font-size:0.95em; color:#777; }
+    .timeline-event .desc { margin-left:1em; }
+    .followup-modal-bg { position:fixed; z-index:20; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center;}
+    .followup-modal { background:#fff; padding:2em; border-radius:10px; min-width:350px; max-width:600px; max-height:70vh; overflow:auto;}
+    .close-btn { float:right; font-size:1.5em; cursor:pointer; color:#c00;}
+    .search-bar, .filter-bar { margin-bottom: 1em; display:flex; gap:1em; }
+    .pagination { margin:1em 0; }
+    .pagination button { margin-right: 3px; }
+    .status-row { font-size:0.93em; }
+    .status-row span { margin-right:1em;}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CLÍNICA VETERINARIA DR. ICEDO</h1>
+    <p>Seguimiento Post Atención y Control de Pacientes</p>
+  </header>
+  <div class="container-flex">
+    <nav class="side-menu">
+      <h2>Menú Principal</h2>
+      <div class="menu-group">
+        <button class="menu-item" onclick="window.location='panel.html'"><span>🏠</span>Inicio</button>
+        <button class="menu-item" onclick="window.location='seguimiento.html'"><span>🩺</span>Seguimiento</button>
+      </div>
+      <div class="menu-group">
+        <a href="login.html" class="logout-btn">Cerrar Sesión</a>
+      </div>
+    </nav>
+    <main class="main-center">
+      <section>
+        <h2>Registrar Nuevo Seguimiento</h2>
+        <form id="form-seguimiento" autocomplete="off" style="margin-bottom:2em;">
+          <input type="hidden" id="seguimiento-id">
+          <input type="text" id="input-cliente" placeholder="Nombre del cliente" required>
+          <input type="text" id="input-mascota" placeholder="Nombre de la mascota" required>
+          <input type="text" id="input-motivo" placeholder="Motivo del seguimiento" required>
+          <textarea id="input-notas" placeholder="Notas del seguimiento (tratamiento, recomendaciones, etc)" maxlength="500"></textarea>
+          <input type="date" id="input-fecha-prox" placeholder="Próxima cita / control" required>
+          <input type="text" id="input-tags" placeholder="Etiquetas (vacuna, cirugía, etc)">
+          <button type="submit">Registrar</button>
+          <button type="button" id="btn-cancelar" style="display:none;">Cancelar</button>
+        </form>
+      </section>
+      <section>
+        <h2>Seguimientos Activos</h2>
+        <div class="status-row">
+          <span class="badge badge-pendiente">Pendiente</span>
+          <span class="badge badge-completo">Completado</span>
+          <span class="badge badge-atrasado">Atrasado</span>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="buscar" placeholder="Buscar por cliente, mascota, nota, etiqueta...">
+          <button onclick="buscarSeguimientos()">Buscar</button>
+        </div>
+        <div class="filter-bar">
+          <select id="filtro-estado" onchange="cargarSeguimientos()">
+            <option value="">Todos los estados</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="completado">Completado</option>
+            <option value="atrasado">Atrasado</option>
+          </select>
+          <select id="filtro-orden" onchange="cargarSeguimientos()">
+            <option value="fecha_proximo ASC">Próxima cita cercana</option>
+            <option value="fecha_proximo DESC">Próxima cita lejana</option>
+            <option value="fecha_registro DESC">Recientes</option>
+            <option value="fecha_registro ASC">Antiguos</option>
+          </select>
+        </div>
+        <table class="followup-table" border="1" width="100%">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Mascota</th>
+              <th>Motivo</th>
+              <th>Notas</th>
+              <th>Próxima cita</th>
+              <th>Estado</th>
+              <th>Etiquetas</th>
+              <th>Registro</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="seguimientos-body">
+            <tr><td colspan="9">Cargando...</td></tr>
+          </tbody>
+        </table>
+        <div class="pagination" id="paginacion"></div>
+      </section>
+      <section>
+        <h2>Historial de Seguimiento</h2>
+        <div id="timeline-historial" class="timeline"></div>
+      </section>
+    </main>
+  </div>
+  <div id="modal-followup" class="followup-modal-bg" style="display:none;">
+    <div class="followup-modal" id="modal-content"></div>
+  </div>
+  <footer>
+    &copy; 2025 CLÍNICA VETERINARIA DR. ICEDO
+  </footer>
+  <script src="seguimiento.js"></script>
+</body>
+</html>

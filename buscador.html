@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Buscador Global | CLÍNICA VETERINARIA DR. ICEDO</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>CLÍNICA VETERINARIA DR. ICEDO</h1>
+    <p>Buscador Global</p>
+  </header>
+  <div class="container-flex">
+    <nav class="side-menu">
+      <!-- Menú igual que en otras páginas -->
+      <div class="menu-group">
+        <button class="menu-item" onclick="window.location='panel.html'"><span>🏠</span>Inicio</button>
+        <button class="menu-item" onclick="window.location='buscador.html'"><span>🔍</span>Buscador Global</button>
+      </div>
+      <div class="menu-group">
+        <a href="login.html" class="logout-btn">Cerrar Sesión</a>
+      </div>
+    </nav>
+    <main class="main-center">
+      <section>
+        <h2>Buscador Global</h2>
+        <form id="form-busqueda" autocomplete="off" style="display:flex;gap:1em;align-items:center;">
+          <input type="text" id="input-busqueda" placeholder="Buscar por nombre, teléfono, correo, etc." style="flex:1;" required>
+          <button type="submit">Buscar</button>
+        </form>
+        <div id="resultados-busqueda" style="margin-top:2em;"></div>
+      </section>
+    </main>
+  </div>
+  <footer>
+    &copy; 2025 CLÍNICA VETERINARIA DR. ICEDO
+  </footer>
+  <script src="buscador.js"></script>
+</body>
+</html>

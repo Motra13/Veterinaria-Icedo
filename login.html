@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión | CLÍNICA VETERINARIA DR. ICEDO</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>CLÍNICA VETERINARIA DR. ICEDO</h1>
+    <p>Acceso al sistema interno</p>
+  </header>
+  <main class="acceso-privado">
+    <section>
+      <h2>Iniciar Sesión</h2>
+      <form class="form-login" id="loginForm" method="POST" action="login.php" autocomplete="off">
+        <label for="usuario">Usuario</label>
+        <input type="text" id="usuario" name="usuario" required autocomplete="username">
+
+        <label for="contrasena">Contraseña</label>
+        <input type="password" id="contrasena" name="contrasena" required autocomplete="current-password">
+
+        <button type="submit" class="btn-mapa">Entrar</button>
+      </form>
+      <div id="login-error" style="color:#b30000; text-align:center; margin-top:1rem;">
+        <!-- Aquí se puede mostrar un mensaje de error desde PHP -->
+        <?php
+        if (isset($_GET['error'])) {
+          echo htmlspecialchars($_GET['error']);
+        }
+        ?>
+      </div>
+      <p style="text-align:center; margin-top:1.4rem; font-size:.98rem;">
+        <a href="index.html" style="color:#b30000; text-decoration:underline;">Volver al inicio</a>
+      </p>
+    </section>
+    <section class="aviso-privacidad">
+      <p><em>Acceso exclusivo para personal autorizado.</em></p>
+    </section>
+  </main>
+  <footer>
+    &copy; 2025 CLÍNICA VETERINARIA DR. ICEDO | Panel de empleados
+  </footer>
+  <script src="login.js"></script>
+</body>
+</html>

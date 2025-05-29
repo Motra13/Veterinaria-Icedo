@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Centro de Control | CLÍNICA VETERINARIA DR. ICEDO</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    nav, section {
+      margin: 30px;
+      padding:  auto;
+    }
+    .tabs { display: flex; margin-bottom: 1rem;}
+    .tab-btn { flex:1; padding:1rem; background:#eee; border:none; cursor:pointer; font-size:1.1rem;}
+    .tab-btn.active { background:#b30000; color:#fff;}
+    .tab-content { display:none;}
+    .tab-content.active { display:block;}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CLÍNICA VETERINARIA DR. ICEDO</h1>
+    <p>Centro de Control y Registro</p>
+  </header>
+  <main class="acceso-privado">
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="clientes">Clientes</button>
+      <button class="tab-btn" data-tab="mascotas">Mascotas</button>
+      <button class="tab-btn" data-tab="proveedores">Proveedores</button>
+      <button class="tab-btn" data-tab="empleados">Empleados</button>
+    </nav>
+
+    <!-- Clientes -->
+    <section class="tab-content active" id="tab-clientes">
+      <h2>Registrar Cliente</h2>
+      <form id="form-cliente">
+        <input type="text" name="nombre" placeholder="Nombre" required>
+        <input type="text" name="apellido" placeholder="Apellido" required>
+        <input type="tel" name="telefono" placeholder="Teléfono">
+        <input type="email" name="correo" placeholder="Correo">
+        <input type="text" name="direccion" placeholder="Dirección">
+        <button type="submit">Registrar Cliente</button>
+      </form>
+      <div id="msg-cliente"></div>
+    </section>
+
+    <!-- Mascotas -->
+    <section class="tab-content" id="tab-mascotas">
+      <h2>Registrar Mascota</h2>
+      <form id="form-mascota">
+        <input type="text" name="nombre_mascota" placeholder="Nombre de la Mascota" required>
+        <input type="text" name="especie" placeholder="Especie (ej: Perro, Gato)" required>
+        <input type="text" name="raza" placeholder="Raza">
+        <input type="number" name="edad" placeholder="Edad">
+        <input type="number" name="peso" placeholder="Peso (kg)">
+        <select name="sexo" required>
+          <option value="">Sexo</option>
+          <option value="Macho">Macho</option>
+          <option value="Hembra">Hembra</option>
+        </select>
+        <input type="text" name="cliente_nombre" placeholder="Dueño (nombre)">
+        <button type="submit">Registrar Mascota</button>
+      </form>
+      <div id="msg-mascota"></div>
+    </section>
+
+    <!-- Proveedores -->
+    <section class="tab-content" id="tab-proveedores">
+      <h2>Registrar Proveedor</h2>
+      <form id="form-proveedor">
+        <input type="text" name="nombre_proveedor" placeholder="Nombre del Proveedor" required>
+        <input type="tel" name="telefono" placeholder="Teléfono">
+        <input type="email" name="correo" placeholder="Correo">
+        <input type="text" name="direccion" placeholder="Dirección">
+        <button type="submit">Registrar Proveedor</button>
+      </form>
+      <div id="msg-proveedor"></div>
+    </section>
+
+    <!-- Empleados -->
+    <section class="tab-content" id="tab-empleados">
+      <h2>Registrar Empleado</h2>
+      <form id="form-empleado">
+        <input type="text" name="nombre" placeholder="Nombre" required>
+        <input type="text" name="apellido" placeholder="Apellido" required>
+        <input type="email" name="correo" placeholder="Correo">
+        <input type="tel" name="telefono" placeholder="Teléfono">
+        <input type="text" name="cargo" placeholder="Cargo o Puesto">
+        <button type="submit">Registrar Empleado</button>
+      </form>
+      <div id="msg-empleado"></div>
+    </section>
+
+    <section style="text-align:center; margin-top:2rem;">
+      <a href="panel.html" class="btn-mapa">Volver al Panel</a>
+    </section>
+  </main>
+  <footer>
+    &copy; 2025 CLÍNICA VETERINARIA DR. ICEDO | Centro de Control
+  </footer>
+  <script src="registro.js"></script>
+</body>
+</html>
