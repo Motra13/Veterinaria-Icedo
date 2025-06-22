@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <title>Buscador Global | CLÍNICA VETERINARIA DR. ICEDO</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .result-box { border: 1px solid #ccc; padding: 1em; margin-bottom: 1em; border-radius: 5px; }
+    .edit-form { margin-top: 0.5em; }
+    .edit-form input[type="text"], .edit-form input[type="date"] { width: 100%; margin-bottom: 0.5em; }
+  </style>
 </head>
 <body>
   <header>
@@ -12,7 +17,6 @@
   </header>
   <div class="container-flex">
     <nav class="side-menu">
-      <!-- Menú igual que en otras páginas -->
       <div class="menu-group">
         <button class="menu-item" onclick="window.location='panel.html'"><span>🏠</span>Inicio</button>
         <button class="menu-item" onclick="window.location='buscador.html'"><span>🔍</span>Buscador Global</button>

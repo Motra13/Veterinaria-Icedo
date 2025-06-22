@@ -10,6 +10,9 @@ $conn = mysqli_connect($host, $user, $pass, $db);
 if (!$conn) {
     die("Error de conexión: " . mysqli_connect_error());
 }
+
+$action = $_GET['action'] ?? $_POST['action'] ?? '';
+
 // CREAR
 if($action==='crear'){
   $cliente = trim($_POST['cliente']??'');
