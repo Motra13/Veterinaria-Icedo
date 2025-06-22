@@ -3,13 +3,15 @@ session_start();
 header('Content-Type: application/json');
 
 // Conexión MySQL
-$host = 'localhost';
-$user = 'root';
-$password = '';
-$database = 'veterinaria';
-$conn = new mysqli($host, $user, $password, $database);
-if ($conn->connect_error) {
-  echo json_encode(['error'=>'Error de conexión a la base de datos']); exit();
+$host = "sql108.infinityfree.com";
+$user = "if0_39292268";
+$pass = "y05lQCFT6T";
+$db   = "if0_39292268_veterinaria";
+
+$conn = mysqli_connect($host, $user, $pass, $db);
+
+if (!$conn) {
+    die("Error de conexión: " . mysqli_connect_error());
 }
 
 $action = $_GET['action'] ?? '';

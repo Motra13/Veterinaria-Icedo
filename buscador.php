@@ -1,13 +1,15 @@
 <?php
 header('Content-Type: application/json');
-$host = 'localhost';
-$user = 'root';
-$password = '';
-$database = 'veterinaria';
+$host = "sql108.infinityfree.com";
+$user = "if0_39292268";
+$pass = "y05lQCFT6T";
+$db   = "if0_39292268_veterinaria";
 
-$conn = new mysqli($host, $user, $password, $database);
-if ($conn->connect_error) { echo json_encode(['error'=>'DB error']); exit(); }
+$conn = mysqli_connect($host, $user, $pass, $db);
 
+if (!$conn) {
+    die("Error de conexión: " . mysqli_connect_error());
+}
 $q = trim($_GET['q'] ?? '');
 if(strlen($q)<2) { echo json_encode(['error'=>'Búsqueda demasiado corta']); exit(); }
 

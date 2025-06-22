@@ -2,10 +2,10 @@
 session_start();
 
 // Configuración de conexión
-$host = 'localhost';
-$user = 'root';
-$password = ''; // Por defecto en XAMPP
-$database = 'veterinaria';
+$host = "sql108.infinityfree.com";
+$user = "if0_39292268";
+$pass = "y05lQCFT6T";
+$db   = "if0_39292268_veterinaria";
 
 // Obtener datos del formulario
 $usuario = isset($_POST['usuario']) ? trim($_POST['usuario']) : '';
@@ -16,8 +16,8 @@ if ($usuario === '' || $contrasena === '') {
     exit();
 }
 
-// Conectar a la base de datos
-$conn = new mysqli($host, $user, $password, $database);
+// Conectar a la base de datos (¡CORREGIDO!)
+$conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) {
     die('Error de conexión: ' . $conn->connect_error);
 }
