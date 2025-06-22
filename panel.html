@@ -86,9 +86,25 @@
           </ul>
         </div>
       </div>
+        <div class="dashboard-widgets" style="display:flex; gap:1.4em; flex-wrap:wrap; margin-bottom:1.7em;">
+          <div class="widget" id="wdg-clientes"></div>
+          <div class="widget" id="wdg-mascotas"></div>
+          <div class="widget" id="wdg-productos"></div>
+          <div class="widget" id="wdg-citas-hoy"></div>
+          <div class="widget" id="wdg-seguimientos"></div>
+          <div class="widget" id="wdg-stock-bajo"></div>
+          <div class="widget" id="wdg-caducan"></div>
+        </div>
       <!-- Agenda Principal -->
       <div class="agenda-section">
         <h2>Agenda de Hoy</h2>
+        <div style="margin-bottom:1.5em;">
+          <b>Leyenda calendario:</b>
+          <span style="background:#b30000; color:#fff; border-radius:4px; padding:2px 8px;">Cita</span>
+          <span style="background:#FBC02D; color:#222; border-radius:4px; padding:2px 8px;">Caducidad</span>
+          <span style="background:#43A047; color:#fff; border-radius:4px; padding:2px 8px;">Seguimiento</span>
+          <span style="background:#c00; color:#fff; border-radius:4px; padding:2px 8px;">Atrasado</span>
+        </div>
         <div id="calendar"></div>
       </div>
     </section>

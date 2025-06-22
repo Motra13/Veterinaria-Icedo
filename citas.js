@@ -1,5 +1,9 @@
 // --- Utilidades ---
-function escapeHtml(txt) { return (txt||'').replace(/[&<>"']/g, c => ({'&':"&amp;",'<':"&lt;",'>':"&gt;",'"':"&quot;","'":"&#39;"}[c]); }
+function escapeHtml(txt) {
+  return (txt||'').replace(/[&<>"']/g, function(c) {
+    return {'&':"&amp;",'<':"&lt;",'>':"&gt;",'"':"&quot;","'":"&#39;"}[c];
+  });
+}
 
 // --- Llenar autocompletado de clientes ---
 document.getElementById('cliente').addEventListener('input', function() {
@@ -58,7 +62,6 @@ document.getElementById('fecha').addEventListener('change', function() {
     .then(r=>r.json())
     .then(ocupadas=>{
       selectHora.innerHTML = '';
-      // Supón horario de 9:00 a 20:00, cada 30 minutos
       for(let h=9; h<=20; h++) {
         for(let m=0; m<=30; m+=30) {
           let hora = (h<10?'0':'')+h+':'+(m==0?'00':'30');
@@ -73,6 +76,7 @@ document.getElementById('fecha').addEventListener('change', function() {
 document.getElementById('form-cita').addEventListener('submit', function(e){
   e.preventDefault();
   let fd = new FormData(this);
+  document.getElementById('msg').style.color = '#b30000';
   document.getElementById('msg').textContent = 'Reservando...';
   fetch('citas.php?action=add', {method:'POST', body:fd})
     .then(r=>r.json())
@@ -81,6 +85,8 @@ document.getElementById('form-cita').addEventListener('submit', function(e){
         document.getElementById('msg').style.color = 'green';
         document.getElementById('msg').textContent = 'Cita reservada correctamente.';
         this.reset();
+        document.getElementById('fecha').value = (new Date()).toISOString().slice(0,10);
+        document.getElementById('fecha').dispatchEvent(new Event('change'));
         cargarCalendario();
       } else {
         document.getElementById('msg').style.color = '#b30000';
@@ -89,21 +95,12 @@ document.getElementById('form-cita').addEventListener('submit', function(e){
     });
 });
 
-// --- Modal de ayuda ---
-window.abrirModalAyuda = function() {
-  document.getElementById('modal-ayuda').style.display = 'flex';
-}
-window.cerrarModalAyuda = function() {
-  document.getElementById('modal-ayuda').style.display = 'none';
-}
-
-// --- FullCalendar ---
+// --- FullCalendar 6.1.17 ---
 let calendar;
 function cargarCalendario() {
   fetch('citas.php?action=all')
     .then(r=>r.json())
     .then(citas=>{
-      // Formatea los eventos para FullCalendar
       let eventos = citas.map(c => {
         let color = "#b30000";
         if(c.estado==="Completada") color = "#43A047";
@@ -112,14 +109,12 @@ function cargarCalendario() {
         return {
           id: c.id,
           title: escapeHtml(c.mascota) + " (" + escapeHtml(c.cliente) + ")",
-          start: c.fecha + "T" + c.hora,
+          start: c.start,
           description: escapeHtml(c.motivo) + (c.tags ? "<br><span class='tag'>"+escapeHtml(c.tags)+"</span>" : ""),
           color: color,
           estado: c.estado
         }
       });
-
-      // Si ya existe el calendario, destrúyelo para recargar
       if(calendar){
         calendar.removeAllEvents();
         eventos.forEach(ev=>calendar.addEvent(ev));
@@ -142,7 +137,7 @@ function cargarCalendario() {
           mostrarDetalleCita(info.event.id);
         },
         nowIndicator: true,
-        slotDuration: "00:30:00",
+        slotDuration: "01:00:00",
         eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false }
       });
       calendar.render();
@@ -199,10 +194,8 @@ function cambiarEstadoCita(id, estado) {
 
 // --- Inicializa autocompletes y horas en carga inicial ---
 window.addEventListener('DOMContentLoaded', ()=>{
-  // Llenar clientes y mascotas iniciales
   document.getElementById('cliente').dispatchEvent(new Event('input'));
   document.getElementById('mascota').dispatchEvent(new Event('input'));
-  // Llenar horas disponibles para hoy
   document.getElementById('fecha').value = (new Date()).toISOString().slice(0,10);
   document.getElementById('fecha').dispatchEvent(new Event('change'));
 });

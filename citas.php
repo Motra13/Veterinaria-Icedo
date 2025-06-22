@@ -4,14 +4,12 @@ $host = "localhost";
 $user = "root";
 $password = "";
 $database = "veterinaria";
-
 $conn = new mysqli($host, $user, $password, $database);
 if ($conn->connect_error) { echo json_encode(["error"=>"Error de conexión"]); exit(); }
-
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
+// Listar todas las citas (formato compatible con FullCalendar)
 if ($action === "all") {
-    // Traer todas las citas
     $sql = "SELECT c.id_cita, cl.nombre as cliente, m.nombre_mascota as mascota, c.fecha_cita as fecha, c.hora_cita as hora, c.motivo, c.estado, c.tags
             FROM citas c
             LEFT JOIN clientes cl ON c.id_cliente = cl.id_cliente
@@ -27,28 +25,26 @@ if ($action === "all") {
             "hora" => substr($row["hora"],0,5),
             "motivo" => $row["motivo"],
             "estado" => $row["estado"] ?: "Agendada",
-            "tags" => $row["tags"] ?? ""
+            "tags" => $row["tags"] ?? "",
+            "start" => $row["fecha"] . "T" . substr($row["hora"],0,5)
         ];
     }
     echo json_encode($citas);
     exit();
 }
 
+// --- (El resto del archivo es igual que tu versión anterior, sin cambios) ---
+
 if ($action === "add") {
-    // Guardar una nueva cita
     $cliente = isset($_POST['cliente']) ? trim($_POST['cliente']) : '';
     $mascota = isset($_POST['mascota']) ? trim($_POST['mascota']) : '';
     $fecha = isset($_POST['fecha']) ? $_POST['fecha'] : '';
     $hora = isset($_POST['hora']) ? $_POST['hora'] : '';
     $motivo = isset($_POST['motivo']) ? $_POST['motivo'] : '';
     $tags = isset($_POST['tags']) ? trim($_POST['tags']) : '';
-
-    // Validar campos
     if ($cliente === '' || $mascota === '' || $fecha === '' || $hora === '' || $motivo === '') {
         echo json_encode(['success'=>false, "error"=>"Todos los campos son obligatorios."]); exit();
     }
-
-    // ¿El cliente existe?
     $stmt = $conn->prepare("SELECT id_cliente FROM clientes WHERE nombre = ?");
     $stmt->bind_param("s", $cliente);
     $stmt->execute();
@@ -56,14 +52,11 @@ if ($action === "add") {
     if($row=$res->fetch_assoc()){
         $id_cliente = $row['id_cliente'];
     } else {
-        // Si no existe, lo crea
         $stmt = $conn->prepare("INSERT INTO clientes (nombre, fecha_registro) VALUES (?, NOW())");
         $stmt->bind_param("s", $cliente);
         $stmt->execute();
         $id_cliente = $stmt->insert_id;
     }
-
-    // ¿La mascota existe?
     $stmt = $conn->prepare("SELECT id_mascota FROM mascotas WHERE nombre_mascota = ? AND id_cliente = ?");
     $stmt->bind_param("si", $mascota, $id_cliente);
     $stmt->execute();
@@ -71,14 +64,11 @@ if ($action === "add") {
     if($row=$res->fetch_assoc()){
         $id_mascota = $row['id_mascota'];
     } else {
-        // Si no existe, la crea
         $stmt = $conn->prepare("INSERT INTO mascotas (id_cliente, nombre_mascota) VALUES (?, ?)");
         $stmt->bind_param("is", $id_cliente, $mascota);
         $stmt->execute();
         $id_mascota = $stmt->insert_id;
     }
-
-    // Verifica si ya hay una cita en esa fecha y hora
     $stmt = $conn->prepare("SELECT id_cita FROM citas WHERE fecha_cita = ? AND hora_cita = ?");
     $stmt->bind_param("ss", $fecha, $hora);
     $stmt->execute();
@@ -87,8 +77,6 @@ if ($action === "add") {
         echo json_encode(['success'=>false, "error"=>"Ya hay una cita en esa fecha y hora."]);
         exit();
     }
-
-    // Inserta la cita
     $stmt = $conn->prepare("INSERT INTO citas (id_mascota, id_cliente, fecha_cita, hora_cita, motivo, estado, tags) VALUES (?, ?, ?, ?, ?, 'Agendada', ?)");
     $stmt->bind_param("iissss", $id_mascota, $id_cliente, $fecha, $hora, $motivo, $tags);
     if ($stmt->execute()) {
@@ -99,7 +87,8 @@ if ($action === "add") {
     exit();
 }
 
-// Autocomplete de clientes
+// --- autocomplete clientes, mascotas, horas, update_estado, detalle (igual que antes) ---
+
 if ($action === "clientes") {
     $q = isset($_GET['q']) ? "%".$_GET['q']."%" : "%";
     $stmt = $conn->prepare("SELECT id_cliente, nombre FROM clientes WHERE nombre LIKE ? ORDER BY nombre LIMIT 10");
@@ -113,8 +102,6 @@ if ($action === "clientes") {
     echo json_encode($clientes);
     exit();
 }
-
-// Autocomplete de mascotas (por nombre y cliente)
 if ($action === "mascotas") {
     $cliente = isset($_GET['cliente']) ? trim($_GET['cliente']) : '';
     $q = isset($_GET['q']) ? "%".$_GET['q']."%" : "%";
@@ -144,8 +131,6 @@ if ($action === "mascotas") {
     echo json_encode($mascotas);
     exit();
 }
-
-// Horas ocupadas para una fecha
 if ($action === "horas_ocupadas") {
     $fecha = isset($_GET['fecha']) ? $_GET['fecha'] : '';
     $sql = "SELECT hora_cita FROM citas WHERE fecha_cita = ?";
@@ -160,8 +145,6 @@ if ($action === "horas_ocupadas") {
     echo json_encode($horas);
     exit();
 }
-
-// Cambiar estado de cita (completar/cancelar)
 if ($action === "update_estado") {
     $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
     $estado = isset($_POST['estado']) ? $_POST['estado'] : '';
@@ -175,8 +158,6 @@ if ($action === "update_estado") {
     }
     exit();
 }
-
-// Detalles de cita para modal
 if ($action === "detalle") {
     $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     $sql = "SELECT c.*, cl.nombre as cliente, m.nombre_mascota as mascota FROM citas c LEFT JOIN clientes cl ON c.id_cliente = cl.id_cliente LEFT JOIN mascotas m ON c.id_mascota = m.id_mascota WHERE c.id_cita=?";
@@ -201,6 +182,5 @@ if ($action === "detalle") {
     }
     exit();
 }
-
 echo json_encode(['success'=>false, "error"=>"Acción no válida."]);
 ?>

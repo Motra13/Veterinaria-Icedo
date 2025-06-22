@@ -1,15 +1,17 @@
-// Menú desplegable (side menu)
-function toggleSubmenu(id) {
-  document.querySelectorAll('.submenu').forEach(sub => {
-    if (sub.id === id) {
-      sub.classList.toggle('show');
-    } else {
-      sub.classList.remove('show');
-    }
+// Widgets rápidos
+fetch('panel.php?action=widgets')
+  .then(res => res.json())
+  .then(wdg => {
+    document.getElementById('wdg-clientes').innerHTML = `<b>Clientes</b><br>${wdg.clientes}`;
+    document.getElementById('wdg-mascotas').innerHTML = `<b>Mascotas</b><br>${wdg.mascotas}`;
+    document.getElementById('wdg-productos').innerHTML = `<b>Productos</b><br>${wdg.productos}`;
+    document.getElementById('wdg-citas-hoy').innerHTML = `<b>Citas hoy</b><br>${wdg.citas_hoy}`;
+    document.getElementById('wdg-seguimientos').innerHTML = `<b>Seguimientos pendientes</b><br>${wdg.seguimientos_pendientes}`;
+    document.getElementById('wdg-stock-bajo').innerHTML = `<b>Stock bajo</b><br>${wdg.productos_stock_bajo}`;
+    document.getElementById('wdg-caducan').innerHTML = `<b>Caducan pronto</b><br>${wdg.productos_caducan_pronto}`;
   });
-}
 
-// Cargar usuario en sesión, notificaciones y recordatorios desde panel.php
+// Usuario sesión igual
 fetch('panel.php?action=session')
   .then(res => res.json())
   .then(data => {
@@ -17,7 +19,7 @@ fetch('panel.php?action=session')
     document.getElementById('user-role').textContent = data.rol || "Empleado";
   });
 
-// Notificaciones y recordatorios
+// Notificaciones y recordatorios enriquecidas
 fetch('panel.php?action=notificaciones')
   .then(res => res.json())
   .then(data => {
@@ -32,21 +34,31 @@ function renderList(arr, id) {
   ).join("");
 }
 
-// Agenda del día con FullCalendar y PHP/MySQL
+// Agenda del día con FullCalendar y PHP/MySQL, ahora muestra citas, caducidades y seguimientos
 document.addEventListener('DOMContentLoaded', function() {
   var calendarEl = document.getElementById('calendar');
   var calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'timeGridDay',
+    initialView: 'timeGridWeek',
     locale: 'es',
-    headerToolbar: { left: '', center: 'title', right: '' },
+    headerToolbar: { 
+      left: 'prev,next today', 
+      center: 'title', 
+      right: '' 
+    },
     height: 420,
     events: function(fetchInfo, successCallback, failureCallback) {
-      const today = new Date().toISOString().slice(0,10);
-      fetch('panel.php?action=agenda&day=' + today)
+      // fetchInfo.startStr y fetchInfo.endStr están en formato YYYY-MM-DD
+      fetch(`panel.php?action=agenda&start=${fetchInfo.startStr}&end=${fetchInfo.endStr}`)
         .then(res => res.json())
         .then(data => {
-          successCallback(data); // [{title, start, end, color}]
+          successCallback(data); // [{title, start, end, color, description, type}]
         });
+    },
+    eventDidMount: function(info) {
+      // Tooltip con descripción
+      if (info.event.extendedProps.description) {
+        info.el.title = info.event.extendedProps.description;
+      }
     }
   });
   calendar.render();
